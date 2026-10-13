@@ -8,6 +8,7 @@ import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.CardRepository;
 import com.example.demo.repository.LoanRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.AccountProvisioningService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +46,7 @@ public class DataInitializer implements CommandLineRunner {
     private final CardRepository cardRepository;
     private final LoanRepository loanRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AccountProvisioningService accountProvisioningService;
     private final boolean seedEnabled;
     private final int dummyCustomers;
 
@@ -53,6 +55,7 @@ public class DataInitializer implements CommandLineRunner {
                            CardRepository cardRepository,
                            LoanRepository loanRepository,
                            PasswordEncoder passwordEncoder,
+                           AccountProvisioningService accountProvisioningService,
                            @Value("${app.seed.enabled:true}") boolean seedEnabled,
                            @Value("${app.seed.dummy-customers:12}") int dummyCustomers) {
         this.userRepository = userRepository;
@@ -60,6 +63,7 @@ public class DataInitializer implements CommandLineRunner {
         this.cardRepository = cardRepository;
         this.loanRepository = loanRepository;
         this.passwordEncoder = passwordEncoder;
+        this.accountProvisioningService = accountProvisioningService;
         this.seedEnabled = seedEnabled;
         this.dummyCustomers = dummyCustomers;
     }
@@ -94,6 +98,15 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(new User("admin", passwordEncoder.encode("admin123"), "ADMIN"));
             log.info("Seeded admin user 'admin' (admin123).");
         }
+
+        userRepository.findByUsername("admin").ifPresent(admin -> {
+            if (accountRepository.findByUserId(admin.getId()).isEmpty()
+                    && cardRepository.findByUserId(admin.getId()).isEmpty()
+                    && loanRepository.findByUserId(admin.getId()).isEmpty()) {
+                accountProvisioningService.provisionStarterData(admin.getId());
+                log.info("Provisioned starter records for 'admin'.");
+            }
+        });
     }
 
     private void seedDummyCustomers() {

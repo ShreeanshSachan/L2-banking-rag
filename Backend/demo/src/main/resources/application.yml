@@ -70,6 +70,8 @@ app:
   seed:
     enabled: ${SEED_ENABLED:true}
     dummy-customers: ${SEED_DUMMY_CUSTOMERS:12}
+    # Give newly registered users starter accounts/cards/loans so their view isn't empty.
+    provision-on-register: ${SEED_PROVISION_ON_REGISTER:true}
 
 logging:
   level:

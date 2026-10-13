@@ -155,7 +155,11 @@ Seeding is **idempotent** (existing users are left untouched) and configurable:
 ```bash
 SEED_ENABLED=true          # set false to start with an empty database
 SEED_DUMMY_CUSTOMERS=12    # how many dummy customers, 0 to disable
+SEED_PROVISION_ON_REGISTER=true   # new sign-ups get starter accounts/cards/loans
 ```
+
+Registered users are **auto-provisioned** with starter data (1–2 accounts, a card and often a loan)
+so the dashboard is never empty. Disable with `SEED_PROVISION_ON_REGISTER=false`.
 
 ---
 
