@@ -15,6 +15,16 @@ can also answer personal questions ("what is my balance?") by translating intent
 
 ---
 
+## Documentation
+
+| Document | Contents |
+|----------|----------|
+| [docs/SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md) | Architecture, components, data model, API, security, failure modes |
+| [docs/RUN_ON_VSCODE_OFFICE_LAPTOP.md](docs/RUN_ON_VSCODE_OFFICE_LAPTOP.md) | Step-by-step setup and run guide for VS Code (Docker + local) |
+| [docs/BUILD_PROMPTS.md](docs/BUILD_PROMPTS.md) | The prompts used to build this, plus anti-patterns and why they fail |
+
+---
+
 ## Architecture
 
 ```
