@@ -1,0 +1,26 @@
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">SB</span>
+    <div>
+      <h1>Secure Bank</h1>
+      <p>AI Banking Support Assistant</p>
+    </div>
+  </div>
+
+  @if (auth.isAuthenticated()) {
+    <nav class="nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/chat" routerLinkActive="active">Assistant</a>
+      <span class="user">{{ auth.username() }}</span>
+      <button class="btn ghost" (click)="logout()">Logout</button>
+    </nav>
+  }
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <span>Secure Bank · RAG-powered assistant · Grounded policy answers + scoped account data</span>
+</footer>

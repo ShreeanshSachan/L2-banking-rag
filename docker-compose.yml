@@ -1,0 +1,56 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: banking-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: banking
+      MYSQL_USER: ${DB_USER:-bankuser}
+      MYSQL_PASSWORD: ${DB_PASS:-bankpass}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-rootpass}
+    ports:
+      # Host port 3307 to avoid clashing with a local MySQL on 3306.
+      # The backend reaches this container internally at db:3306.
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASS:-rootpass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ./Backend/demo
+    container_name: banking-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_USER: ${DB_USER:-bankuser}
+      DB_PASS: ${DB_PASS:-bankpass}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-super-secret-key-please-override-in-prod-0123456789}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_CHAT_MODEL: ${GEMINI_CHAT_MODEL:-gemini-flash-latest}
+      GEMINI_CHAT_MODEL_FALLBACKS: ${GEMINI_CHAT_MODEL_FALLBACKS:-gemini-3.1-flash-lite,gemini-3.5-flash,gemini-3.8-flash}
+      GEMINI_EMBEDDING_MODEL: ${GEMINI_EMBEDDING_MODEL:-gemini-embedding-001}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://localhost}
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./Frontend/Banking_Frontend
+    container_name: banking-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

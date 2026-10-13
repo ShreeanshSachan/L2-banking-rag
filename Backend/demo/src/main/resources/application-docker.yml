@@ -1,0 +1,13 @@
+---
+# Docker profile - used by docker-compose. The MySQL host is the `db` service.
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:mysql://db:3306/banking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: ${DB_USER:bankuser}
+    password: ${DB_PASS:bankpass}
+  jpa:
+    hibernate:
+      ddl-auto: update

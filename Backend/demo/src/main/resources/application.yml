@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: banking-rag-backend
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/banking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true}
+    username: ${DB_USER:bankuser}
+    password: ${DB_PASS:bankpass}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL:update}
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: never
+
+# --- Application specific ---------------------------------------------------
+jwt:
+  secret: ${JWT_SECRET:dev-only-change-me-super-secret-key-please-override-in-prod-0123456789}
+  expiration: ${JWT_EXPIRATION:86400000} # 24h
+
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta}
+  chat-model: ${GEMINI_CHAT_MODEL:gemini-flash-latest}
+  # Tried in order when the primary model returns 503/429/404 (e.g. overloaded
+  # or retired models). Comma-separated.
+  chat-model-fallbacks: ${GEMINI_CHAT_MODEL_FALLBACKS:gemini-3.1-flash-lite,gemini-3.5-flash,gemini-3.8-flash}
+  embedding-model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-001}
+  timeout-ms: ${GEMINI_TIMEOUT_MS:45000}
+
+rag:
+  pdf-path: ${POLICY_PDF:./docs/Secure_Bank_policy_Manual_input-docs.pdf}
+  chunk-size: ${RAG_CHUNK_SIZE:1000}
+  chunk-overlap: ${RAG_CHUNK_OVERLAP:150}
+  top-k: ${RAG_TOP_K:5}
+  min-score: ${RAG_MIN_SCORE:0.30}
+  max-context-chars: ${RAG_MAX_CONTEXT_CHARS:9000}
+
+security:
+  cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200,http://localhost}
+
+audit:
+  dir: ${AUDIT_DIR:./logs}
+
+logging:
+  level:
+    root: INFO
+    com.example.demo: ${LOG_LEVEL:INFO}
