@@ -65,6 +65,12 @@ security:
 audit:
   dir: ${AUDIT_DIR:./logs}
 
+# Demo data seeding. Idempotent; set enabled=false to run with an empty database.
+app:
+  seed:
+    enabled: ${SEED_ENABLED:true}
+    dummy-customers: ${SEED_DUMMY_CUSTOMERS:12}
+
 logging:
   level:
     root: INFO

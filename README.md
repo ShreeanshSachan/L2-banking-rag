@@ -141,6 +141,22 @@ npm run start
 
 Users, accounts, cards and loans are seeded automatically by the backend on first start.
 
+### Dummy customers
+
+On startup the backend also seeds **12 dummy customers** (each with 1–3 accounts, 0–2 cards and 0–2 loans)
+so the dashboard and RAG examples have plenty of data:
+
+| Usernames                                    | Password      | Role      |
+|----------------------------------------------|---------------|-----------|
+| `rahul`, `priya`, `arjun`, `sneha`, `vikram`, `ananya`, `rohit`, `kavya`, `imran`, `neha`, `dev`, `meera` | `password123` | ROLE_USER |
+
+Seeding is **idempotent** (existing users are left untouched) and configurable:
+
+```bash
+SEED_ENABLED=true          # set false to start with an empty database
+SEED_DUMMY_CUSTOMERS=12    # how many dummy customers, 0 to disable
+```
+
 ---
 
 ## API reference
